@@ -21,7 +21,7 @@ router.post('/suggest', async (req: Request, res: Response) => {
   }
 
   try {
-    const model = 'gemini-3-flash-preview';
+    const model = 'gemini-3.1-flash-lite-preview';
 
     const prompt = `
       You are an expert GDPR consultant assisting a user in completing a Legitimate Interest Assessment (LIA).
@@ -100,7 +100,7 @@ router.post('/analyze', async (req: Request, res: Response) => {
   }
 
   try {
-    const model = 'gemini-3-pro-preview';
+    const model = 'gemini-3.1-pro-preview';
     const prompt = `
       Act as a strict Data Protection Auditor.
       Review the following Legitimate Interest Assessment (LIA) data against **EDPB Guidelines 1/2024**.
