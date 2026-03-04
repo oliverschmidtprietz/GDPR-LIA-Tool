@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { SECTIONS } from '../constants';
-import { LIAData, LIAQuestion, ComplianceCheck } from '../types';
-import { ChevronLeft, Wand2, Loader2, FileCheck, BookOpen, CheckCircle, XCircle, AlertTriangle, ArrowRight, RefreshCw, ArchiveRestore, X } from 'lucide-react';
+import { LIAData, LIAQuestion, ComplianceAnalysis } from '../types';
+import { ChevronLeft, Wand2, Loader2, FileCheck, BookOpen, AlertTriangle, ArrowRight, RefreshCw, ArchiveRestore, X } from 'lucide-react';
 import { getGeminiSuggestion, analyzeRisk } from '../services/geminiService';
 import { useAutoSave } from '../hooks/useAutoSave';
+import { AnalysisRenderer } from './AnalysisRenderer';
 
 interface WizardProps {
   onComplete: (data: LIAData) => void;
@@ -12,11 +13,11 @@ interface WizardProps {
 export const Wizard: React.FC<WizardProps> = ({ onComplete }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [formData, setFormData] = useState<LIAData>({
-    date_of_assessment: new Date().toLocaleDateString()
+    date_of_assessment: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
   });
   const [loadingAI, setLoadingAI] = useState<string | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
-  const [riskAnalysis, setRiskAnalysis] = useState<string | null>(null);
+  const [riskAnalysis, setRiskAnalysis] = useState<ComplianceAnalysis | null>(null);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -87,7 +88,7 @@ export const Wizard: React.FC<WizardProps> = ({ onComplete }) => {
       clearSavedData();
       onComplete({
         ...formData,
-        ai_compliance_analysis: riskAnalysis || ''
+        ai_compliance_analysis: riskAnalysis ? JSON.stringify(riskAnalysis) : ''
       });
     }
   };
@@ -110,7 +111,6 @@ export const Wizard: React.FC<WizardProps> = ({ onComplete }) => {
       handleInputChange(question.id, suggestion);
     } catch {
       setAiError(question.id);
-      setTimeout(() => setAiError(null), 5000);
     }
     setLoadingAI(null);
   };
@@ -193,80 +193,7 @@ export const Wizard: React.FC<WizardProps> = ({ onComplete }) => {
       );
     }
 
-    try {
-      const analysis = JSON.parse(riskAnalysis);
-
-      return (
-        <div className="space-y-8">
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-            <h5 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Executive Summary</h5>
-            <p className="text-brand-black text-sm leading-relaxed font-medium">{analysis.summary}</p>
-          </div>
-
-          <div className="grid gap-4">
-            {analysis.checks?.map((check: ComplianceCheck, idx: number) => (
-              <div key={idx} className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm flex items-start gap-4 hover:shadow-md transition-shadow">
-                <div className={`mt-1 p-1 rounded-full ${
-                  check.status === 'Pass' ? 'bg-green-100 text-green-600' :
-                  check.status === 'Fail' ? 'bg-red-100 text-red-600' :
-                  'bg-yellow-100 text-yellow-600'
-                }`}>
-                  {check.status === 'Pass' && <CheckCircle className="w-5 h-5" />}
-                  {check.status === 'Fail' && <XCircle className="w-5 h-5" />}
-                  {check.status === 'Warning' && <AlertTriangle className="w-5 h-5" />}
-                </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-bold text-brand-black">{check.name}</span>
-                    <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide ${
-                      check.status === 'Pass' ? 'bg-green-100 text-green-700' :
-                      check.status === 'Fail' ? 'bg-red-100 text-red-700' :
-                      'bg-yellow-100 text-yellow-700'
-                    }`}>{check.status}</span>
-                  </div>
-                  <p className="text-xs text-gray-500 leading-relaxed">{check.details}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {(analysis.risks?.length > 0 || analysis.recommendations?.length > 0) && (
-            <div className="grid md:grid-cols-2 gap-6">
-              {analysis.risks?.length > 0 && (
-                <div className="bg-red-50/50 p-6 rounded-2xl border border-red-100">
-                  <h5 className="text-[10px] font-bold uppercase tracking-widest text-red-400 mb-4">Risks</h5>
-                  <ul className="space-y-3">
-                    {analysis.risks.map((r: string, i: number) => (
-                      <li key={i} className="text-xs text-gray-600 flex gap-2 items-start leading-relaxed">
-                        <span className="w-1.5 h-1.5 bg-red-400 rounded-full mt-1.5 flex-shrink-0"></span> {r}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {analysis.recommendations?.length > 0 && (
-                <div className="bg-green-50/50 p-6 rounded-2xl border border-green-100">
-                  <h5 className="text-[10px] font-bold uppercase tracking-widest text-green-500 mb-4">Recommendations</h5>
-                  <ul className="space-y-3">
-                    {analysis.recommendations.map((r: string, i: number) => (
-                      <li key={i} className="text-xs text-gray-600 flex gap-2 items-start leading-relaxed">
-                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-1.5 flex-shrink-0"></span> {r}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-
-          <p className="mt-4 pt-4 border-t border-gray-200 text-[10px] text-gray-400 italic">
-            Disclaimer: The AI analysis is an automated assessment based on EDPB guidelines. Content may be incomplete and should be reviewed by a legal professional.
-          </p>
-        </div>
-      );
-    } catch {
-      return <p className="text-gray-500 text-sm">Analysis generated but format invalid.</p>;
-    }
+    return <AnalysisRenderer analysis={riskAnalysis} variant="wizard" />;
   };
 
   return (
@@ -461,9 +388,24 @@ export const Wizard: React.FC<WizardProps> = ({ onComplete }) => {
                 <p className="mt-2 text-xs text-red-500 font-medium">{fieldErrors[q.id]}</p>
               )}
 
-              {/* AI suggestion error */}
+              {/* AI suggestion error — persistent with retry/dismiss */}
               {aiError === q.id && (
-                <p className="mt-2 text-xs text-red-500 font-medium">Failed to generate AI suggestion. Please try again.</p>
+                <div className="mt-2 flex items-center gap-3 text-xs text-red-500 font-medium bg-red-50 px-3 py-2 rounded-lg border border-red-100">
+                  <span className="flex-1">Failed to generate AI suggestion.</span>
+                  <button
+                    onClick={() => handleAIAssist(q)}
+                    className="flex items-center gap-1 text-red-600 hover:text-red-800 font-bold uppercase tracking-wider"
+                  >
+                    <RefreshCw className="w-3 h-3" /> Retry
+                  </button>
+                  <button
+                    onClick={() => setAiError(null)}
+                    className="flex items-center text-red-400 hover:text-red-600"
+                    aria-label="Dismiss error"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               )}
             </div>
           ))}

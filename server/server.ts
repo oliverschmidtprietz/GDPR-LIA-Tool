@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import helmet from 'helmet';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import geminiRouter from './api/gemini.js';
@@ -9,6 +10,21 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3001', 10);
+
+// Security headers via helmet — CSP allows html2pdf.js (uses canvas + blob URLs)
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-eval'"],    // html2pdf.js uses eval for jsPDF
+      styleSrc: ["'self'", "'unsafe-inline'"],    // Tailwind + inline styles
+      imgSrc: ["'self'", "data:", "blob:"],       // html2pdf.js canvas output
+      workerSrc: ["'self'", "blob:"],             // html2pdf.js web workers
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'"],
+    },
+  },
+}));
 
 app.use(express.json({ limit: '1mb' }));
 

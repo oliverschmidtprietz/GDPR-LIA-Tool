@@ -1,4 +1,4 @@
-import { LIAData } from '../types';
+import { LIAData, ComplianceAnalysis } from '../types';
 
 export const getGeminiSuggestion = async (
   context: string,
@@ -29,7 +29,7 @@ export const getGeminiSuggestion = async (
 
 export const analyzeRisk = async (
   assessmentData: LIAData
-): Promise<string> => {
+): Promise<ComplianceAnalysis> => {
   try {
     const response = await fetch('/api/analyze', {
       method: 'POST',
@@ -41,8 +41,8 @@ export const analyzeRisk = async (
       throw new Error(`Server error: ${response.status}`);
     }
 
-    const data = await response.json();
-    return JSON.stringify(data);
+    const data: ComplianceAnalysis = await response.json();
+    return data;
   } catch (error) {
     console.error('Risk analysis error:', error);
     throw error;

@@ -100,6 +100,22 @@ export const SECTIONS: LIASection[] = [
         helperText: 'Is it a concrete interest or merely hypothetical/speculative?',
         type: 'text',
         required: true
+      },
+      {
+        id: 'p1_recognized',
+        category: 'Recognition',
+        question: 'Is this interest recognized by Recital 47 or CJEU case law?',
+        helperText: 'Recital 47 explicitly recognizes: direct marketing, fraud prevention, network/information security, intra-group transfers. Recognition does not exempt from the full LIA but strengthens the interest.',
+        type: 'select',
+        options: [
+          'Yes — Recital 47 (direct marketing)',
+          'Yes — Recital 47 (fraud prevention)',
+          'Yes — Recital 47 (network security)',
+          'Yes — Recital 47 (intra-group transfers)',
+          'Yes — CJEU case law',
+          'No — Not explicitly recognized'
+        ],
+        required: true
       }
     ]
   },
@@ -130,6 +146,14 @@ export const SECTIONS: LIASection[] = [
         category: 'Data Minimization',
         question: 'Is only personal data that is necessary for achieving the purpose being processed?',
         helperText: 'Confirm that the scope of data collected is limited to what is strictly needed (Data Minimization).',
+        type: 'text',
+        required: true
+      },
+      {
+        id: 'p2_alternatives',
+        category: 'Alternatives',
+        question: 'What alternatives were considered and why were they rejected?',
+        helperText: 'Document less intrusive alternatives you evaluated (e.g., anonymized data, aggregated statistics, opt-in consent, synthetic data). Explain specifically why each was insufficient. The EDPB requires this assessment — failure to consider alternatives undermines the necessity claim.',
         type: 'text',
         required: true
       }
@@ -196,6 +220,36 @@ export const SECTIONS: LIASection[] = [
         helperText: 'Specify the exact retention period. The duration of processing is a key factor in the assessment. It is vital to clearly define and strictly adhere to retention periods to ensure compliance with the storage limitation principle.',
         type: 'text',
         required: true
+      },
+      {
+        id: 'p3_opt_out',
+        category: 'Right to Object',
+        question: 'Is an opt-out mechanism offered? (Art. 21)',
+        helperText: 'Describe how data subjects can object to the processing. For direct marketing, the right to object is absolute (Art. 21(2)). The opt-out must be clearly communicated, easily accessible, and unconditional. An LIA without an Art. 21 mechanism is incomplete.',
+        type: 'text',
+        required: true
+      },
+      {
+        id: 'p3_profiling',
+        category: 'Profiling',
+        question: 'Does the processing involve profiling or automated decision-making?',
+        helperText: 'Profiling based on Art. 6(1)(f) is subject to heightened scrutiny. Solely automated decisions producing legal or similarly significant effects cannot rely on Art. 6(1)(f) alone (Art. 22).',
+        type: 'select',
+        options: [
+          'No profiling or automated decisions',
+          'Profiling without automated decisions',
+          'Automated decisions with human oversight',
+          'Solely automated decisions (Art. 22 applies)'
+        ],
+        required: true
+      },
+      {
+        id: 'p3_third_country',
+        category: 'International Transfers',
+        question: 'Is data transferred to third countries?',
+        helperText: 'If applicable, specify the countries and transfer mechanisms (SCCs, adequacy decision, BCRs). Third-country transfers increase risk weighting in the balancing exercise.',
+        type: 'text',
+        required: false
       }
     ]
   },
@@ -221,6 +275,20 @@ export const SECTIONS: LIASection[] = [
         category: 'Comments',
         question: 'Additional Comments / Reasoning Summary',
         type: 'text',
+        required: false
+      },
+      {
+        id: 'final_dpia',
+        category: 'DPIA',
+        question: 'Is a Data Protection Impact Assessment (DPIA) also required? (Art. 35)',
+        helperText: 'A DPIA is mandatory when processing is likely to result in a high risk to data subjects — e.g., systematic profiling, large-scale processing of special categories, or public monitoring. The LIA and DPIA are complementary, not mutually exclusive.',
+        type: 'select',
+        options: [
+          'Not required',
+          'Yes — DPIA has been conducted',
+          'Yes — DPIA is planned',
+          'Under evaluation'
+        ],
         required: false
       }
     ]

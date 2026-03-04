@@ -21,14 +21,14 @@ export const Layout: React.FC<LayoutProps> = ({ children, onOpenGuide, onOpenFAQ
               <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-500 mt-0.5">GDPR Compliance</p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-8">
              <button onClick={onOpenGuide} className="text-sm font-medium text-gray-600 hover:text-brand-black transition-colors bg-transparent border-none cursor-pointer">Guide</button>
              <button onClick={onOpenFAQ} className="text-sm font-medium text-gray-600 hover:text-brand-black transition-colors bg-transparent border-none cursor-pointer">FAQ</button>
              <div className="hidden sm:block h-4 w-px bg-gray-200"></div>
              <div className="hidden sm:flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">V0.8 Beta</span>
+                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">V1.0</span>
              </div>
           </div>
         </div>
@@ -42,7 +42,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, onOpenGuide, onOpenFAQ
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm font-medium">
           <p>&copy; {new Date().getFullYear()} LIA Tool. All rights reserved.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
-             <a href="mailto:contact@lia-tool.com" className="hover:text-brand-black transition-colors">Contact</a>
+             <a href="https://onezero.legal/contact" target="_blank" rel="noopener noreferrer" className="hover:text-brand-black transition-colors">Contact</a>
           </div>
         </div>
       </footer>

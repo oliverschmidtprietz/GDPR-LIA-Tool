@@ -102,7 +102,7 @@ export const Report: React.FC<ReportProps> = ({ data, onEdit }) => {
             </div>
             <div className="text-right">
               <span className="block text-gray-400 uppercase tracking-widest text-[10px] font-bold mb-1">Assessment Date</span>
-              <span className="text-lg font-bold text-black block">{data['date_of_assessment'] || new Date().toLocaleDateString()}</span>
+              <span className="text-lg font-bold text-black block">{data['date_of_assessment'] || new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
             </div>
           </div>
         </div>

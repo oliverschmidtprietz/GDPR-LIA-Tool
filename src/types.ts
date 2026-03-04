@@ -23,15 +23,28 @@ export interface LIAData {
   [key: string]: string | boolean | string[];
 }
 
+export interface ComplianceSubCriteria {
+  name: string;
+  status: 'Pass' | 'Fail' | 'Warning';
+  detail: string;
+}
+
+export interface ComplianceRisk {
+  description: string;
+  severity: 'High' | 'Medium' | 'Low';
+}
+
 export interface ComplianceCheck {
   name: string;
   status: 'Pass' | 'Fail' | 'Warning';
   details: string;
+  subCriteria?: ComplianceSubCriteria[];
 }
 
 export interface ComplianceAnalysis {
   summary: string;
+  overallRating: 'Compliant' | 'Partially Compliant' | 'Non-Compliant';
   checks: ComplianceCheck[];
-  risks: string[];
+  risks: ComplianceRisk[] | string[];
   recommendations: string[];
 }

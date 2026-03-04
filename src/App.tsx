@@ -4,6 +4,7 @@ import { Wizard } from './components/Wizard';
 import { Report } from './components/Report';
 import { GuideModal } from './components/GuideModal';
 import { FAQModal } from './components/FAQModal';
+import { useTypingAnimation } from './hooks/useTypingAnimation';
 import { LIAData } from './types';
 import { AlertTriangle } from 'lucide-react';
 
@@ -13,6 +14,7 @@ function App() {
   const [showGuide, setShowGuide] = useState(false);
   const [showFAQ, setShowFAQ] = useState(false);
   const wizardRef = useRef<HTMLDivElement>(null);
+  const typing = useTypingAnimation();
 
   const handleComplete = (completedData: LIAData) => {
     setData(completedData);
@@ -43,13 +45,26 @@ function App() {
               </div>
 
               {/* Hero Title */}
-              <h2 className="text-5xl md:text-7xl font-bold text-brand-black mb-6 tracking-tight leading-[1.1]">
-                Legitimate Interest<br/>
-                <span className="relative inline-block">
-                  Assessment
-                  <div className="absolute -bottom-2 left-0 w-full h-3 bg-brand-lime/50 -z-10 rounded-full transform -rotate-1"></div>
+              <h2
+                className="text-5xl md:text-7xl font-bold text-brand-black mb-6 tracking-tight leading-[1.1]"
+                aria-label="Legitimate Interest Assessment."
+              >
+                <span aria-hidden="true">
+                  {typing.line1}
+                  {typing.phase === 'line1' && typing.showCursor && (
+                    <span className="inline-block w-[3px] h-[0.85em] bg-brand-black align-middle ml-0.5 animate-blink-cursor" />
+                  )}
+                  {(typing.phase !== 'line1' || typing.done) && <br />}
+                  {typing.line2 && (
+                    <span className="relative inline-block bg-brand-lime text-brand-black px-3 py-1 mt-3 rounded-lg">
+                      {typing.line2}
+                      {(typing.phase === 'line2' || typing.phase === 'linger') && typing.showCursor && (
+                        <span className="inline-block w-[3px] h-[0.85em] bg-brand-black align-middle ml-0.5 animate-blink-cursor" />
+                      )}
+                    </span>
+                  )}
+                  {typing.done && <span className="text-gray-300">.</span>}
                 </span>
-                <span className="text-gray-300">.</span>
               </h2>
 
               <p className="text-gray-500 text-lg md:text-xl font-normal max-w-2xl leading-relaxed mb-10">
