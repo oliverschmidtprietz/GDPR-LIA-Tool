@@ -17,6 +17,7 @@ export function useAutoSave(
 ) {
   const [showRecovery, setShowRecovery] = useState(false);
   const [savedState, setSavedState] = useState<SavedState | null>(null);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasRestoredRef = useRef(false);
 
@@ -56,6 +57,7 @@ export function useAutoSave(
           savedAt: new Date().toISOString(),
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        setLastSaved(new Date());
       }
     }, 1000);
 
@@ -97,5 +99,5 @@ export function useAutoSave(
     localStorage.removeItem(STORAGE_KEY);
   }, []);
 
-  return { showRecovery, restore, discard, clearSavedData };
+  return { showRecovery, restore, discard, clearSavedData, lastSaved };
 }

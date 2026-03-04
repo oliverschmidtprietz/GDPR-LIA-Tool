@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { SECTIONS } from '../constants';
 import { LIAData, LIAQuestion, ComplianceAnalysis } from '../types';
-import { ChevronLeft, Wand2, Loader2, FileCheck, BookOpen, AlertTriangle, ArrowRight, RefreshCw, ArchiveRestore, X } from 'lucide-react';
+import { ChevronLeft, Wand2, Loader2, FileCheck, BookOpen, AlertTriangle, ArrowRight, RefreshCw, ArchiveRestore, X, Check } from 'lucide-react';
 import { getGeminiSuggestion, analyzeRisk } from '../services/geminiService';
 import { useAutoSave } from '../hooks/useAutoSave';
 import { AnalysisRenderer } from './AnalysisRenderer';
 
 interface WizardProps {
   onComplete: (data: LIAData) => void;
+  onStepChange?: (step: number) => void;
 }
 
-export const Wizard: React.FC<WizardProps> = ({ onComplete }) => {
+export const Wizard: React.FC<WizardProps> = ({ onComplete, onStepChange }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [formData, setFormData] = useState<LIAData>({
     date_of_assessment: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -23,9 +24,10 @@ export const Wizard: React.FC<WizardProps> = ({ onComplete }) => {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const cardRef = useRef<HTMLDivElement>(null);
+  const [showSavedIndicator, setShowSavedIndicator] = useState(false);
 
   // Auto-save hook
-  const { showRecovery, restore, discard, clearSavedData } = useAutoSave(
+  const { showRecovery, restore, discard, clearSavedData, lastSaved } = useAutoSave(
     formData,
     currentStepIndex,
     setFormData,
@@ -143,6 +145,19 @@ export const Wizard: React.FC<WizardProps> = ({ onComplete }) => {
     }
   }, [currentSection.id, riskAnalysis]);
 
+  // Notify parent of step changes
+  useEffect(() => {
+    onStepChange?.(currentStepIndex);
+  }, [currentStepIndex, onStepChange]);
+
+  // Show saved indicator briefly when auto-save triggers
+  useEffect(() => {
+    if (!lastSaved) return;
+    setShowSavedIndicator(true);
+    const timer = setTimeout(() => setShowSavedIndicator(false), 2000);
+    return () => clearTimeout(timer);
+  }, [lastSaved]);
+
   const getDynamicHelperText = (q: LIAQuestion) => {
     const defaultText = q.helperText;
 
@@ -242,23 +257,29 @@ export const Wizard: React.FC<WizardProps> = ({ onComplete }) => {
           </div>
 
           {/* Step Indicators */}
-          <div
-            className="flex gap-1.5 no-print"
-            role="progressbar"
-            aria-valuenow={currentStepIndex + 1}
-            aria-valuemin={1}
-            aria-valuemax={SECTIONS.length}
-            aria-label={`Step ${currentStepIndex + 1} of ${SECTIONS.length}`}
-          >
-            {SECTIONS.map((_, idx) => (
-              <div
-                key={idx}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  idx === currentStepIndex ? 'w-8 bg-brand-black' :
-                  idx < currentStepIndex ? 'w-4 bg-brand-lime' : 'w-4 bg-gray-200'
-                }`}
-              />
-            ))}
+          <div className="flex flex-col items-end gap-2 no-print">
+            <div
+              className="flex gap-1.5"
+              role="progressbar"
+              aria-valuenow={currentStepIndex + 1}
+              aria-valuemin={1}
+              aria-valuemax={SECTIONS.length}
+              aria-label={`Step ${currentStepIndex + 1} of ${SECTIONS.length}`}
+            >
+              {SECTIONS.map((_, idx) => (
+                <div
+                  key={idx}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    idx === currentStepIndex ? 'w-8 bg-brand-black' :
+                    idx < currentStepIndex ? 'w-4 bg-brand-lime' : 'w-4 bg-gray-200'
+                  }`}
+                />
+              ))}
+            </div>
+            <div className={`flex items-center gap-1 text-xs text-gray-400 font-medium transition-opacity duration-300 ${showSavedIndicator ? 'opacity-100' : 'opacity-0'}`}>
+              <Check className="w-3 h-3" />
+              Saved
+            </div>
           </div>
         </div>
 
@@ -288,12 +309,13 @@ export const Wizard: React.FC<WizardProps> = ({ onComplete }) => {
                 <label htmlFor={q.id} className="block text-sm font-semibold text-brand-black uppercase tracking-wider">
                   {q.question}
                   {q.required && <span className="text-red-400 ml-1">*</span>}
+                  {!q.required && <span className="text-gray-400 font-normal normal-case tracking-normal ml-1">(optional)</span>}
                 </label>
                 {!q.disableAI && q.type === 'text' && (
                   <button
                     onClick={() => handleAIAssist(q)}
                     disabled={loadingAI === q.id}
-                    className="text-[10px] font-bold uppercase tracking-widest text-brand-black flex items-center gap-2 transition-all bg-brand-lime hover:bg-brand-black hover:text-brand-lime border border-brand-lime hover:border-brand-black px-4 py-2 rounded-full shadow-sm hover:shadow-md active:scale-95"
+                    className="text-[10px] font-bold uppercase tracking-widest text-brand-black flex items-center gap-2 transition-all bg-brand-lime hover:bg-brand-black hover:text-brand-lime border border-brand-lime hover:border-brand-black px-4 py-2 rounded-full shadow-sm hover:shadow-md active:scale-95 disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200 disabled:shadow-none disabled:cursor-not-allowed"
                   >
                     {loadingAI === q.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Wand2 className="w-3.5 h-3.5" />}
                     {loadingAI === q.id ? 'Drafting...' : 'Draft with AI'}
@@ -379,6 +401,14 @@ export const Wizard: React.FC<WizardProps> = ({ onComplete }) => {
                     >
                       No
                     </button>
+                  </div>
+                )}
+                {q.id === 'p1_lawfulness' && formData[q.id] === 'No' && (
+                  <div className="mt-3 flex items-start gap-3 bg-orange-50 border border-orange-200 rounded-xl p-4">
+                    <AlertTriangle className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
+                    <p className="text-sm text-orange-700 font-medium">
+                      If the interest is not lawful, Art. 6(1)(f) GDPR cannot serve as a legal basis. Consider whether this assessment should proceed.
+                    </p>
                   </div>
                 )}
               </div>

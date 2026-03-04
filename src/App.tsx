@@ -15,6 +15,7 @@ function App() {
   const [showGuide, setShowGuide] = useState(false);
   const [showFAQ, setShowFAQ] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
+  const [wizardStep, setWizardStep] = useState(0);
   const wizardRef = useRef<HTMLDivElement>(null);
   const typing = useTypingAnimation();
 
@@ -38,7 +39,7 @@ function App() {
     >
       {view === 'wizard' ? (
         <>
-          <div className="w-full relative mb-12 no-print overflow-hidden pt-20 pb-12">
+          {wizardStep === 0 && <div className="w-full relative mb-12 no-print overflow-hidden pt-20 pb-12">
             <div className="max-w-4xl mx-auto px-4 text-center flex flex-col items-center">
 
               {/* Badge Style */}
@@ -83,10 +84,10 @@ function App() {
                 </button>
               </div>
             </div>
-          </div>
+          </div>}
 
           <div ref={wizardRef} className="w-full px-4 mb-32 relative z-10 max-w-6xl mx-auto">
-            <Wizard onComplete={handleComplete} />
+            <Wizard onComplete={handleComplete} onStepChange={setWizardStep} />
 
             <div className="max-w-3xl mx-auto mt-12">
               <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm flex gap-4 items-start">
