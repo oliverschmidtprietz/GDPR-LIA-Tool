@@ -4,6 +4,7 @@ import { Wizard } from './components/Wizard';
 import { Report } from './components/Report';
 import { GuideModal } from './components/GuideModal';
 import { FAQModal } from './components/FAQModal';
+import { PrivacyModal } from './components/PrivacyModal';
 import { useTypingAnimation } from './hooks/useTypingAnimation';
 import { LIAData } from './types';
 import { AlertTriangle } from 'lucide-react';
@@ -13,6 +14,7 @@ function App() {
   const [data, setData] = useState<LIAData>({});
   const [showGuide, setShowGuide] = useState(false);
   const [showFAQ, setShowFAQ] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
   const wizardRef = useRef<HTMLDivElement>(null);
   const typing = useTypingAnimation();
 
@@ -32,6 +34,7 @@ function App() {
     <Layout
       onOpenGuide={() => setShowGuide(true)}
       onOpenFAQ={() => setShowFAQ(true)}
+      onOpenPrivacy={() => setShowPrivacy(true)}
     >
       {view === 'wizard' ? (
         <>
@@ -92,8 +95,11 @@ function App() {
                 </div>
                 <div>
                   <h5 className="font-bold text-brand-black text-xs uppercase tracking-widest mb-1">* Disclaimer</h5>
-                  <p className="text-sm text-gray-500 font-medium leading-relaxed">
+                  <p className="text-sm text-gray-500 font-medium leading-relaxed mb-2">
                     The AI analysis is an automated assessment or guidance based on EDPB guidelines. The AI-generated content might be incorrect or incomplete, and should in any case be reviewed by a legal professional or the Data Protection Officer before use.
+                  </p>
+                  <p className="text-sm text-gray-500 font-medium leading-relaxed">
+                    Please do not enter personal data or sensitive information into the form fields. The controller name, address, and DPO contact details are optional. We do not store the data you enter for any purpose beyond your current session (client-side auto-save).
                   </p>
                 </div>
               </div>
@@ -106,6 +112,7 @@ function App() {
 
       {showGuide && <GuideModal onClose={() => setShowGuide(false)} />}
       {showFAQ && <FAQModal onClose={() => setShowFAQ(false)} />}
+      {showPrivacy && <PrivacyModal onClose={() => setShowPrivacy(false)} />}
     </Layout>
   );
 }

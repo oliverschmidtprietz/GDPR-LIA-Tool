@@ -5,9 +5,10 @@ interface LayoutProps {
   children: ReactNode;
   onOpenGuide?: () => void;
   onOpenFAQ?: () => void;
+  onOpenPrivacy?: () => void;
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children, onOpenGuide, onOpenFAQ }) => {
+export const Layout: React.FC<LayoutProps> = ({ children, onOpenGuide, onOpenFAQ, onOpenPrivacy }) => {
   return (
     <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-brand-black font-sans">
       <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 no-print transition-all border-b border-transparent">
@@ -21,7 +22,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, onOpenGuide, onOpenFAQ
               <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-500 mt-0.5">GDPR Compliance</p>
             </div>
           </div>
-
+          
           <div className="flex items-center gap-8">
              <button onClick={onOpenGuide} className="text-sm font-medium text-gray-600 hover:text-brand-black transition-colors bg-transparent border-none cursor-pointer">Guide</button>
              <button onClick={onOpenFAQ} className="text-sm font-medium text-gray-600 hover:text-brand-black transition-colors bg-transparent border-none cursor-pointer">FAQ</button>
@@ -42,6 +43,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, onOpenGuide, onOpenFAQ
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm font-medium">
           <p>&copy; {new Date().getFullYear()} LIA Tool. All rights reserved.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
+             <button onClick={onOpenPrivacy} className="hover:text-brand-black transition-colors bg-transparent border-none cursor-pointer font-medium text-sm text-gray-400">Privacy</button>
              <a href="https://onezero.legal/contact" target="_blank" rel="noopener noreferrer" className="hover:text-brand-black transition-colors">Contact</a>
           </div>
         </div>
