@@ -15,7 +15,7 @@ export const SECTIONS: LIASection[] = [
       {
         id: 'controller_name',
         category: 'Controller Details',
-        question: 'Controller Name (Optional)',
+        question: 'Controller Name',
         helperText: 'Legal name of the organization responsible for the data processing.',
         type: 'text',
         componentType: 'input',
@@ -26,7 +26,7 @@ export const SECTIONS: LIASection[] = [
       {
         id: 'controller_address',
         category: 'Controller Details',
-        question: 'Address (Optional)',
+        question: 'Address',
         helperText: 'Full postal address of the controller.',
         type: 'text',
         componentType: 'input',
@@ -37,7 +37,7 @@ export const SECTIONS: LIASection[] = [
       {
         id: 'dpo_contact',
         category: 'Controller Details',
-        question: 'DPO Contact (Optional)',
+        question: 'DPO Contact',
         helperText: 'Contact details of Data Protection Officer, if applicable',
         type: 'text',
         componentType: 'input',

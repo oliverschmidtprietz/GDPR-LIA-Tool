@@ -82,6 +82,10 @@ select:focus {
     break-before: page;
   }
 
+  main {
+    background-image: none !important;
+  }
+
   /* Ensure backgrounds print */
   * {
     -webkit-print-color-adjust: exact !important;

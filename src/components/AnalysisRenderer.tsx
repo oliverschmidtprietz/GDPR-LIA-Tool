@@ -138,7 +138,7 @@ export const AnalysisRenderer: React.FC<AnalysisRendererProps> = ({ analysis, va
           <div>
             <h5 className="font-bold text-gray-400 text-[10px] uppercase tracking-widest mb-1">Audit Trail Note</h5>
             <p className="text-[10px] text-gray-400 italic">
-              This analysis was generated automatically on {new Date().toLocaleDateString()} based on the inputs provided.
+              This analysis was generated automatically on {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })} based on the inputs provided.
               It serves as guidance for the Data Protection Officer and does not constitute legal advice.
             </p>
           </div>

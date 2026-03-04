@@ -35,7 +35,13 @@ export const Layout: React.FC<LayoutProps> = ({ children, onOpenGuide, onOpenFAQ
         </div>
       </header>
 
-      <main className="flex-grow flex flex-col items-center w-full">
+      <main
+        className="flex-grow flex flex-col items-center w-full"
+        style={{
+          backgroundImage: 'radial-gradient(circle, #d1d5db 1px, transparent 1px)',
+          backgroundSize: '24px 24px',
+        }}
+      >
         {children}
       </main>
 
