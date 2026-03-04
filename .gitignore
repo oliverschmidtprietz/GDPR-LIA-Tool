@@ -15,6 +15,9 @@ dist-server
 .env
 .env.local
 
+# Claude Code
+CLAUDE.md
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
