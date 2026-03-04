@@ -40,6 +40,12 @@ The tool follows the structured methodology from **EDPB Guidelines 1/2024** and 
    - Vite dev server on `http://localhost:3000`
    - Express API server on `http://localhost:3001`
 
+## AI Configuration
+
+This tool uses **Google Gemini** for AI-powered drafting and compliance analysis. You need a [Google AI Studio API key](https://aistudio.google.com/apikey) — add it to your `.env` file as `GEMINI_API_KEY`.
+
+**Alternative AI providers:** The architecture is provider-agnostic — only `server/api/gemini.ts` needs to be replaced. The client code and prompt structure work with any backend. OpenAI, Claude, or any OpenAI-compatible API can be swapped in with minimal changes.
+
 ## Production Build
 
 ```
