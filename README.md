@@ -1,6 +1,19 @@
 # GDPR LIA Assessment Tool
 
-A professional tool for documenting Legitimate Interest Assessments (LIA) under Art. 6(1)(f) GDPR, following EDPB Guidelines 1/2024 with AI-powered guidance.
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
+
+A professional, AI-powered tool for documenting **Legitimate Interest Assessments (LIA)** under Art. 6(1)(f) GDPR. Built for data protection officers, privacy consultants, and legal teams who need to produce thorough, regulation-compliant assessments efficiently.
+
+The tool follows the structured methodology from **EDPB Guidelines 1/2024** and **Opinion 28/2024**, guiding users through each required step with AI-assisted drafting and real-time compliance analysis.
+
+## Features
+
+- **AI-Powered Drafting** — Gemini AI suggests legally sound text for each assessment section, grounded in EDPB guidance
+- **EDPB Guidelines 1/2024 Compliance** — Built-in reference to the European Data Protection Board's three-step LIA test (purpose, necessity, balancing)
+- **Step-by-Step Wizard** — Guided 5-step workflow ensures no required element is missed
+- **PDF Export** — Generate print-ready assessment documents with one click
+- **Auto-Save** — Progress is automatically saved to localStorage with recovery on return
+- **Server-Side API Key** — Gemini API key never reaches the browser; all AI calls are proxied through Express
 
 ## Prerequisites
 
@@ -45,24 +58,6 @@ NODE_ENV=production npm start
 
 The Express server serves both the API and the static client files.
 
-## Deployment on Hostinger
-
-1. **Environment Variables** (Hostinger panel):
-   - `GEMINI_API_KEY` - Your Gemini API key
-   - `NODE_ENV` - Set to `production`
-
-2. **Build Command:**
-   ```
-   npm install && npm run build
-   ```
-
-3. **Start Command:**
-   ```
-   npm start
-   ```
-
-4. **Entry Point:** `dist-server/server.js`
-
 ## Project Structure
 
 ```
@@ -79,3 +74,13 @@ The Express server serves both the API and the static client files.
 ├── dist/                # Built client (generated)
 └── dist-server/         # Built server (generated)
 ```
+
+## License
+
+This project is licensed under the [GNU Affero General Public License v3.0](LICENSE).
+
+Copyright (C) 2026 [OneZero Legal](https://onezero.legal) — Oliver Schmidt-Prietz
+
+## Contact
+
+For questions or feedback, reach out at [onezero.legal](https://onezero.legal).
